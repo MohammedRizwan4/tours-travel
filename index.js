@@ -48,6 +48,13 @@ Testimonial.insertMany([
     { name: 'Niraj', description: "I am VIP banda" },
     { name: 'Niraj', description: "I am VIP banda" },
     { name: 'Niraj', description: "I am VIP banda" },
+    { name: 'Niraj', description: "I am VIP banda" },
+    { name: 'Niraj', description: "I am VIP banda" },
+    { name: 'Niraj', description: "I am VIP banda" },
+    { name: 'Niraj', description: "I am VIP banda" },
+    { name: 'Niraj', description: "I am VIP banda" },
+    { name: 'Niraj', description: "I am VIP banda" },
+    { name: 'Niraj', description: "I am VIP banda" },
 ]).then(function () {
     console.log("Data inserted")  // Success
 }).catch(function (error) {
