@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-    fname: {
+    firstName: {
         type: String,
         required: true,
         trim: true,
         min: 3,
         max: 50
     },
-    lname: {
+    lastName: {
         type: String,
         required: true,
         trim: true,
@@ -18,41 +18,18 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         unique: true,
-        lowercase: true
+        lowercase: true,
+        required: true
     },
     password: {
         type: String,
         required: true
-    },
-    contactNo: {
-        type: Number,
-        default: "9510403920",
-        min: 10,
-        max: 10
-    },
-    gender: {
-        type: Boolean,
-        default: "Female"
-    },
-    isAdmin: {
-        type: Boolean,
-        default: false
-    },
-    img_details: {
-        id: {
-            type: String,
-            required: true
-        },
-        url: {
-            type: String,
-            required: true
-        }
     }
 }, {
     timestamps: true
 })
 
 
-const User = mongoose.model("Users", userSchema)
+const User = mongoose.model("User", userSchema)
 
 export default User
