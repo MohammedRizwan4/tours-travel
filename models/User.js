@@ -25,11 +25,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    admin:{
+    admin: {
         required: true,
         type: Boolean,
         default: false
-    }
+    },
+    tokens: [{
+        type: String
+    }]
 }, {
     timestamps: true
 })
