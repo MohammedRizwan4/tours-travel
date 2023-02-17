@@ -65,6 +65,7 @@ router.put("/update-theme", upload.single('image'), async (req, res) => {
         const update = {
             $set: {
                 image: req.body.image,
+                description: req.body.description
             }
         }
         const saveImage = await ThemeModel.updateOne(filter, update)
@@ -101,6 +102,7 @@ router.put("/update-theme-name", async (req, res) => {
         const update = {
             $set: {
                 name: req.body.name,
+                description: req.body.description
             }
         }
         const saveImage = await ThemeModel.updateOne(filter, update)
@@ -113,7 +115,7 @@ router.put("/update-theme-name", async (req, res) => {
 
 router.get("/allthemes", verifyUser, async (req, res) => {
     try {
-        const data = await ThemeModel.find();
+        const data = await ThemeModel.find().sort({ updatedAt: -1 });
         console.log(data);
         res.status(200).json({ data })
     } catch (error) {
@@ -133,6 +135,17 @@ router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const theme = await ThemeModel.find({ _id: id });
+        res.status(200).json({ theme })
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+router.get('/fetch-theme/:skip', async (req, res) => {
+    try {
+        const { skip } = req.params;
+        const theme = await ThemeModel.findOne({}).skip(skip);
+        console.log(theme);
         res.status(200).json({ theme })
     } catch (error) {
         console.log(error);

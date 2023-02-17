@@ -120,13 +120,6 @@ class Auth {
                             return res.status(201).json({ token, admin: false });
                         }
                     })
-                    console.log(email, password);
-                    if (isAdmin.admin) {
-                        return res.status(201).json({ token, admin: true });
-                    } else {
-                        console.log(email, password);
-                        return res.status(400).json({ token, admin: false });
-                    }
                 } else {
                     return res
                         .status(400)
