@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
 
 const packageSchema = new mongoose.Schema({
     name: {
@@ -17,7 +17,7 @@ const packageSchema = new mongoose.Schema({
             required: true,
             default: ""
         },
-        state: {
+        state_name: {
             type: String,
             required: true,
             default: ""
@@ -37,7 +37,7 @@ const packageSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    starts: {
+    stars: {
         type: Number,
         default: 5
     },
@@ -46,7 +46,10 @@ const packageSchema = new mongoose.Schema({
             type: String,
             default: "Hotels"
         }
-    ]
+    ],
+    theme_id: {
+        type: String,
+    }
 })
 
 const PackageModel = mongoose.model('package', packageSchema)

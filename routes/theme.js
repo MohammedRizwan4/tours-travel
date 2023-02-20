@@ -34,7 +34,7 @@ router.post("/create-theme", upload.single('image'), async (req, res) => {
 
         const saveImage = await ThemeModel(req.body)
         const saved = await saveImage.save();
-        res.status(201).json({ msg: "Theme Added Successfully ", saved })
+        return res.status(201).json({ msg: "Theme Added Successfully ", saved })
     } catch (error) {
         console.log(error);
     }
@@ -69,7 +69,7 @@ router.put("/update-theme", upload.single('image'), async (req, res) => {
             }
         }
         const saveImage = await ThemeModel.updateOne(filter, update)
-        res.status(201).json({ msg: "Theme Added Successfully ", saveImage })
+        return res.status(201).json({ msg: "Theme Added Successfully ", saveImage })
     } catch (error) {
         console.log(error);
     }
@@ -88,7 +88,7 @@ router.delete("/delete-theme", async (req, res) => {
         )
         console.log(id);
         await ThemeModel.findByIdAndDelete(id);
-        res.status(200).json({ msg: "Theme Deleted Successfully" })
+        return res.status(200).json({ msg: "Theme Deleted Successfully" })
     } catch (error) {
         console.log(error);
     }
@@ -107,17 +107,16 @@ router.put("/update-theme-name", async (req, res) => {
         }
         const saveImage = await ThemeModel.updateOne(filter, update)
         console.log(saveImage);
-        res.status(201).json({ msg: "Theme Added Successfully ", saveImage })
+        return res.status(201).json({ msg: "Theme Added Successfully ", saveImage })
     } catch (error) {
         console.log(error);
     }
 })
 
-router.get("/allthemes", verifyUser, async (req, res) => {
+router.get("/allthemes", async (req, res) => {
     try {
-        const data = await ThemeModel.find().sort({ updatedAt: -1 });
-        console.log(data);
-        res.status(200).json({ data })
+        const data = await ThemeModel.find().sort({ updatedAt: 1 });
+        return res.status(200).json({ data })
     } catch (error) {
         console.log(error);
     }
@@ -131,11 +130,13 @@ router.get('/all', async (req, res) => {
     }
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/fetchOne/:id', async (req, res) => {
     try {
         const { id } = req.params;
+        console.log(id);
         const theme = await ThemeModel.find({ _id: id });
-        res.status(200).json({ theme })
+        console.log(theme);
+        return res.status(200).json({ theme })
     } catch (error) {
         console.log(error);
     }
@@ -146,7 +147,7 @@ router.get('/fetch-theme/:skip', async (req, res) => {
         const { skip } = req.params;
         const theme = await ThemeModel.findOne({}).skip(skip);
         console.log(theme);
-        res.status(200).json({ theme })
+        return res.status(200).json({ theme })
     } catch (error) {
         console.log(error);
     }
