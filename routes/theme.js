@@ -142,10 +142,10 @@ router.get('/fetchOne/:id', async (req, res) => {
     }
 })
 
-router.get('/fetch-theme/:skip', async (req, res) => {
+router.get('/fetch-theme/:id', async (req, res) => {
     try {
-        const { skip } = req.params;
-        const theme = await ThemeModel.findOne({}).skip(skip);
+        const { id } = req.params;
+        const theme = await ThemeModel.findOne({ _id: id })
         console.log(theme);
         return res.status(200).json({ theme })
     } catch (error) {

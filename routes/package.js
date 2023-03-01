@@ -93,8 +93,10 @@ router.delete("/delete-package", async (req, res) => {
 
 router.get("/fetch-single-package/:id", async (req, res) => {
     try {
-        const id = req.params.id;
+        const {id} = req.params;
+        console.log(id);
         const package1 = await PackageModel.findOne({ _id: id });
+        console.log(package1);
         return res.status(200).json({ package1 })
     } catch (error) {
         console.log(error);
@@ -165,6 +167,7 @@ router.put("/update-packagee", upload.array('images'), async (req, res) => {
 
         console.log(packageId);
         const updatedPackage = await PackageModel.findByIdAndUpdate({ _id: packageId }, obj, { new: true });
+        console.log(updatedPackage);
         return res.status(200).json({ msg: "Successfully updated", updatedPackage });
     } catch (error) {
         console.log(error);
@@ -172,9 +175,9 @@ router.put("/update-packagee", upload.array('images'), async (req, res) => {
 })
 
 // fetch-theme1-packages/${id}
-router.get("/fetch-theme1-packages/:id", async (req, res) => {
+router.get("/fetch-theme-packages/:id", async (req, res) => {
     try {
-        const id = req.params.id;
+        const { id } = req.params;
         const packages = await PackageModel.find({ theme_id: id });
         return res.status(200).json({ packages })
     } catch (error) {
