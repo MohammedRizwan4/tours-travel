@@ -41,12 +41,75 @@ const packageSchema = new mongoose.Schema({
         type: Number,
         default: 5
     },
-    accommodations: [
-        {
+    date: {
+        type: Date,
+        required: true
+    },
+    details: [{
+        price: {
+            type: Number,
+            required: true
+        },
+        duration: {
             type: String,
-            default: "Hotels"
-        }
-    ],
+            required: true
+        },
+        transfer_price: {
+            type: Number,
+            required: true
+        },
+        accomodations: [{
+            name: {
+                type: String,
+                required: true
+            },
+            nearby: {
+                type: String,
+                required: true
+            },
+            images: [
+                {
+                    type: String,
+                    required: true
+                }
+            ],
+            price: {
+                type: Number,
+                required: true
+            },
+            stars: {
+                type: Number,
+                required: true
+            },
+            acc_type: {
+                type: String,
+                default: "HOTEL"
+            }
+        }],
+        flights: [{
+            airport: {
+                type: String,
+                required: true,
+            },
+            destination_airport: {
+                type: String,
+                required: true
+            },
+            flightno: {
+                type: String,
+                default: "G8-286"
+            },
+            startTime: {
+                type: String,
+                required: true
+            },
+            endTime: {
+                type: String,
+                required: true
+            }
+        }]
+    }],
+
     theme_id: {
         type: String,
     }

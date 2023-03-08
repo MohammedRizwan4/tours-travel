@@ -32,7 +32,18 @@ const userSchema = new mongoose.Schema({
     },
     tokens: [{
         type: String
-    }]
+    }],
+    likes: [
+        { type: String }
+    ],
+    comments: [{
+        packageId: {
+            type: String,
+        },
+        commentDesc: {
+            type: String
+        }
+    }],
 }, {
     timestamps: true
 })
