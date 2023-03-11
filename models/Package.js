@@ -38,16 +38,16 @@ const packageSchema = new mongoose.Schema({
         required: true
     },
     stars: {
-        type: Number,
+        type: String,
         default: 5
     },
     date: {
-        type: Date,
+        type: String,
         required: true
     },
     details: [{
         price: {
-            type: Number,
+            type: String,
             required: true
         },
         duration: {
@@ -55,10 +55,10 @@ const packageSchema = new mongoose.Schema({
             required: true
         },
         transfer_price: {
-            type: Number,
+            type: String,
             required: true
         },
-        accomodations: [{
+        accommodations: [{
             name: {
                 type: String,
                 required: true
@@ -67,18 +67,16 @@ const packageSchema = new mongoose.Schema({
                 type: String,
                 required: true
             },
-            images: [
-                {
-                    type: String,
-                    required: true
-                }
-            ],
+            images: {
+                type: String,
+                required: true
+            },
             price: {
-                type: Number,
+                type: String,
                 required: true
             },
             stars: {
-                type: Number,
+                type: String,
                 required: true
             },
             acc_type: {
@@ -101,11 +99,13 @@ const packageSchema = new mongoose.Schema({
             },
             startTime: {
                 type: String,
-                required: true
+                required: true,
+                default: "10:30"
             },
             endTime: {
                 type: String,
-                required: true
+                required: true,
+                default: "13:50"
             }
         }]
     }],

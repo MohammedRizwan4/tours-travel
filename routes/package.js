@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-router.post("/create-package", upload.array('images', 5), async (req, res) => {
+router.post("/create-package", upload.array('images'), async (req, res) => {
     try {
         for (let i = 0; i < req.files.length; i++) {
             const uploadedFile = req.files[i];
@@ -29,24 +29,263 @@ router.post("/create-package", upload.array('images', 5), async (req, res) => {
             req.body[`image${i + 1}`] = imagePath;
         }
         const destinations = req.body.destinations_covered.split(",");
-        const accommodations = req.body.accommodations.split(",");
-        const obj = {
-            name: req.body.name,
-            images: [req.body.image1, req.body.image2, req.body.image3, req.body.image4, req.body.image5],
-            location: {
-                city: req.body.city,
-                state_name: req.body.state_name
-            },
-            destinations_covered: destinations,
-            starting_point: req.body.starting_point,
-            ending_point: req.body.ending_point,
-            stars: req.body.stars,
-            accommodations: accommodations,
-            theme_id: req.body.theme_id
+        console.log(req.body.aname,
+            req.body.nearby,
+            req.body.aprice,
+            req.body.aprice,
+            req.body.atype);
+        let obj1, obj2;
+        if (!req.body.aname_1 && !req.body.aname_2) {
+            const obj = {
+                name: req.body.name,
+                images: [req.body.image1, req.body.image2, req.body.image3, req.body.image4, req.body.image5],
+                location: {
+                    city: req.body.city,
+                    state_name: req.body.state_name
+                },
+                destinations_covered: destinations,
+                starting_point: req.body.starting_point,
+                ending_point: req.body.ending_point,
+                stars: req.body.stars,
+                date: req.body.selectedDate,
+                details: [
+                    {
+                        price: req.body.price,
+                        duration: "2N/3D",
+                        transfer_price: req.body.transfer,
+                        accommodations: [
+                            {
+                                name: req.body.aname,
+                                nearby: req.body.nearby,
+                                images: req.body.image6,
+                                price: req.body.aprice,
+                                stars: req.body.aprice,
+                                acc_type: req.body.atype
+                            }
+                        ],
+                        flights: [{
+                            airport: req.body.bairport,
+                            destination_airport: req.body.dairport,
+                            flightno: req.body.fno
+                        }]
+                    }
+                ],
+                theme_id: req.body.theme_id
+            }
+            const saveImage = await PackageModel(obj)
+            const saved = await saveImage.save();
+            console.log(saved);
+            return res.status(201).json({ msg: "Successfull", saved })
         }
-        const saveImage = await PackageModel(obj)
-        const saved = await saveImage.save();
-        return res.status(201).json({ msg: "Successfull", saved })
+
+        if (!req.body.aname_1 && req.body.aname_2) {
+            obj2 = {
+                price: req.body.price_2,
+                duration: "5N/6D",
+                transfer_price: req.body.transfer_2,
+                accommodations: [
+                    {
+                        name: req.body.aname_2,
+                        nearby: req.body.nearby_2,
+                        images: req.body.image7,
+                        price: req.body.aprice_2,
+                        stars: req.body.aprice_2,
+                        acc_type: req.body.atype_2
+                    },
+                ],
+                flights: [{
+                    airport: req.body.bairport_2,
+                    destination_airport: req.body.dairport_2,
+                    flightno: req.body.fno_2
+                }]
+            }
+            const obj = {
+                name: req.body.name,
+                images: [req.body.image1, req.body.image2, req.body.image3, req.body.image4, req.body.image5],
+                location: {
+                    city: req.body.city,
+                    state_name: req.body.state_name
+                },
+                destinations_covered: destinations,
+                starting_point: req.body.starting_point,
+                ending_point: req.body.ending_point,
+                stars: req.body.stars,
+                date: req.body.selectedDate,
+                details: [
+                    {
+                        price: req.body.price,
+                        duration: "2N/3D",
+                        transfer_price: req.body.transfer,
+                        accommodations: [
+                            {
+                                name: req.body.aname,
+                                nearby: req.body.nearby,
+                                images: req.body.image6,
+                                price: req.body.aprice,
+                                stars: req.body.aprice,
+                                acc_type: req.body.atype
+                            }
+                        ],
+                        flights: [{
+                            airport: req.body.bairport,
+                            destination_airport: req.body.dairport,
+                            flightno: req.body.fno
+                        }]
+                    },
+                    obj2,
+                ],
+                theme_id: req.body.theme_id
+            }
+            const saveImage = await PackageModel(obj)
+            const saved = await saveImage.save();
+            console.log(saved);
+            return res.status(201).json({ msg: "Successfull", saved })
+        }
+
+        if (req.body.aname_1 && !req.body.aname_2) {
+            obj1 = {
+                price: req.body.price_1,
+                duration: "3N/4D",
+                transfer_price: req.body.transfer_1,
+                accommodations: [
+                    {
+                        name: req.body.aname_1,
+                        nearby: req.body.nearby_1,
+                        images: req.body.image7,
+                        price: req.body.aprice_1,
+                        stars: req.body.aprice_1,
+                        acc_type: req.body.atype_1
+                    },
+                ],
+                flights: [{
+                    airport: req.body.bairport_1,
+                    destination_airport: req.body.dairport_1,
+                    flightno: req.body.fno_1
+                }]
+            }
+            const obj = {
+                name: req.body.name,
+                images: [req.body.image1, req.body.image2, req.body.image3, req.body.image4, req.body.image5],
+                location: {
+                    city: req.body.city,
+                    state_name: req.body.state_name
+                },
+                destinations_covered: destinations,
+                starting_point: req.body.starting_point,
+                ending_point: req.body.ending_point,
+                stars: req.body.stars,
+                date: req.body.selectedDate,
+                details: [
+                    {
+                        price: req.body.price,
+                        duration: "2N/3D",
+                        transfer_price: req.body.transfer,
+                        accommodations: [
+                            {
+                                name: req.body.aname,
+                                nearby: req.body.nearby,
+                                images: req.body.image6,
+                                price: req.body.aprice,
+                                stars: req.body.aprice,
+                                acc_type: req.body.atype
+                            }
+                        ],
+                        flights: [{
+                            airport: req.body.bairport,
+                            destination_airport: req.body.dairport,
+                            flightno: req.body.fno
+                        }]
+                    },
+                    obj1,
+                ],
+                theme_id: req.body.theme_id
+            }
+            const saveImage = await PackageModel(obj)
+            const saved = await saveImage.save();
+            console.log(saved);
+            return res.status(201).json({ msg: "Successfull", saved })
+        }
+
+        if (req.body.aname_2 && req.body.aname_1) {
+            obj1 = {
+                price: req.body.price_1,
+                duration: "3N/4D",
+                transfer_price: req.body.transfer_1,
+                accommodations: [
+                    {
+                        name: req.body.aname_1,
+                        nearby: req.body.nearby_1,
+                        images: req.body.image7,
+                        price: req.body.aprice_1,
+                        stars: req.body.aprice_1,
+                        acc_type: req.body.atype_1
+                    },
+                ],
+                flights: [{
+                    airport: req.body.bairport_1,
+                    destination_airport: req.body.dairport_1,
+                    flightno: req.body.fno_1
+                }]
+            }
+            obj2 = {
+                price: req.body.price_2,
+                duration: "5N/6D",
+                transfer_price: req.body.transfer_2,
+                accommodations: [
+                    {
+                        name: req.body.aname_2,
+                        nearby: req.body.nearby_2,
+                        images: req.body.image8,
+                        price: req.body.aprice_2,
+                        stars: req.body.aprice_2,
+                        acc_type: req.body.atype_2
+                    },
+                ],
+                flights: [{
+                    airport: req.body.bairport_2,
+                    destination_airport: req.body.dairport_2,
+                    flightno: req.body.fno_2
+                }]
+            }
+            const obj = {
+                name: req.body.name,
+                images: [req.body.image1, req.body.image2, req.body.image3, req.body.image4, req.body.image5],
+                location: {
+                    city: req.body.city,
+                    state_name: req.body.state_name
+                },
+                destinations_covered: destinations,
+                starting_point: req.body.starting_point,
+                ending_point: req.body.ending_point,
+                stars: req.body.stars,
+                date: req.body.selectedDate,
+                details: [
+                    {
+                        price: req.body.price,
+                        duration: "2N/3D",
+                        transfer_price: req.body.transfer,
+                        accommodations: [
+                            {
+                                name: req.body.aname,
+                                nearby: req.body.nearby,
+                                images: req.body.image6,
+                                price: req.body.aprice,
+                                stars: req.body.aprice,
+                                acc_type: req.body.atype
+                            }
+                        ],
+                        flights: [{
+                            airport: req.body.bairport,
+                            destination_airport: req.body.dairport,
+                            flightno: req.body.fno
+                        }]
+                    },
+                    obj1,
+                    obj2,
+                ],
+                theme_id: req.body.theme_id
+            }
+        }
     } catch (error) {
         console.log(error);
     }
@@ -93,7 +332,7 @@ router.delete("/delete-package", async (req, res) => {
 
 router.get("/fetch-single-package/:id", async (req, res) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         console.log(id);
         const package1 = await PackageModel.findOne({ _id: id });
         console.log(package1);
