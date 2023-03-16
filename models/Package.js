@@ -38,7 +38,7 @@ const packageSchema = new mongoose.Schema({
         required: true
     },
     stars: {
-        type: String,
+        type: Number,
         default: 5
     },
     date: {
@@ -47,7 +47,7 @@ const packageSchema = new mongoose.Schema({
     },
     details: [{
         price: {
-            type: String,
+            type: Number,
             required: true
         },
         duration: {
@@ -55,7 +55,7 @@ const packageSchema = new mongoose.Schema({
             required: true
         },
         transfer_price: {
-            type: String,
+            type: Number,
             required: true
         },
         accommodations: [{
@@ -72,11 +72,11 @@ const packageSchema = new mongoose.Schema({
                 required: true
             },
             price: {
-                type: String,
+                type: Number,
                 required: true
             },
             stars: {
-                type: String,
+                type: Number,
                 required: true
             },
             acc_type: {
