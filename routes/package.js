@@ -707,6 +707,32 @@ router.get("/fetch-theme-packages/:id", async (req, res) => {
     }
 })
 
+// fetch-all-packages
+router.get("/fetch-all-packages", async (req, res) => {
+    try {
+        const packages = await PackageModel.find();
+        return res.status(200).json({ packages })
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+router.get("/fetch-cities", async (req, res) => {
+    try {
+        const packages = await PackageModel.aggregate([
+            {
+                $group: {
+                    _id: "$location.city",
+                    image: { $first: "$images" },
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+        return res.status(200).json({ packages })
+    } catch (error) {
+        console.log(error);
+    }
+})
 
 export default router;
 
