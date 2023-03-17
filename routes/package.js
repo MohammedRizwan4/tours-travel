@@ -12,7 +12,6 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/package')
     },
     filename: (req, file, cb) => {
-        console.log(file.originalname)
         cb(null, file.originalname)
     }
 })
@@ -28,6 +27,7 @@ router.post("/create-package", upload.array('images'), async (req, res) => {
             const imagePath = 'uploads/package/' + uniqueFilename + "." + `${uploadedFile.mimetype}`.split("/")[1]
             req.body[`image${i + 1}`] = imagePath;
         }
+
         const destinations = req.body.destinations_covered.split(",");
         console.log(req.body.aname,
             req.body.nearby,
@@ -74,7 +74,6 @@ router.post("/create-package", upload.array('images'), async (req, res) => {
             }
             const saveImage = await PackageModel(obj)
             const saved = await saveImage.save();
-            console.log(saved);
             return res.status(201).json({ msg: "Successfull", saved })
         }
 
@@ -138,7 +137,6 @@ router.post("/create-package", upload.array('images'), async (req, res) => {
             }
             const saveImage = await PackageModel(obj)
             const saved = await saveImage.save();
-            console.log(saved);
             return res.status(201).json({ msg: "Successfull", saved })
         }
 
@@ -202,7 +200,6 @@ router.post("/create-package", upload.array('images'), async (req, res) => {
             }
             const saveImage = await PackageModel(obj)
             const saved = await saveImage.save();
-            console.log(saved);
             return res.status(201).json({ msg: "Successfull", saved })
         }
 
@@ -285,6 +282,9 @@ router.post("/create-package", upload.array('images'), async (req, res) => {
                 ],
                 theme_id: req.body.theme_id
             }
+            const saveImage = await PackageModel(obj)
+            const saved = await saveImage.save();
+            return res.status(201).json({ msg: "Successfull", saved })
         }
     } catch (error) {
         console.log(error);
@@ -335,16 +335,15 @@ router.get("/fetch-single-package/:id", async (req, res) => {
         const { id } = req.params;
         console.log(id);
         const package1 = await PackageModel.findOne({ _id: id });
-        console.log(package1);
         return res.status(200).json({ package1 })
     } catch (error) {
         console.log(error);
     }
 })
 
-router.put("/update-packagee", upload.array('images'), async (req, res) => {
+router.put("/update-package", upload.array('images'), async (req, res) => {
     try {
-        console.log(req.body.name);
+        console.log(req.body.id);
         const packageId = req.body.id
         const package1 = await PackageModel.findById({ _id: packageId });
         if (!package1) {
@@ -352,20 +351,8 @@ router.put("/update-packagee", upload.array('images'), async (req, res) => {
         }
 
         let a = 0;
-        for (let i = 0; i <= 5; i++) {
+        for (let i = 0; i < 5; i++) {
             if (req.body[`image${i + 1}path`]) {
-                console.log("Hello ji onkonkonkonkonkonkonk", req.body[`image${i + 1}path`]);
-                console.log(i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i, i,);
-                const uploadedFile = req.files[a];
-                const uniqueFilename = uuidv4();
-                console.log(uploadedFile);
-                console.log(uploadedFile.path);
-                try {
-                    fs.renameSync(uploadedFile.path, `uploads/package/${uniqueFilename}` + "." + `${uploadedFile.mimetype}`.split("/")[1])
-                } catch (error) {
-                    console.log(error);
-                }
-                const imagePath = 'uploads/package/' + uniqueFilename + "." + `${uploadedFile.mimetype}`.split("/")[1]
                 fs.unlink(req.body[`image${i + 1}path`], (err) => {
                     if (err) {
                         console.error(err);
@@ -373,41 +360,337 @@ router.put("/update-packagee", upload.array('images'), async (req, res) => {
                         console.log(`Deleted file: ${path}`);
                     }
                 })
+                const uploadedFile = req.files[a];
+                const uniqueFilename = uuidv4();
+                try {
+                    fs.renameSync(uploadedFile.path, `uploads/package/${uniqueFilename}` + "." + `${uploadedFile.mimetype}`.split("/")[1])
+                } catch (error) {
+                    console.log(error);
+                }
+                const imagePath = 'uploads/package/' + uniqueFilename + "." + `${uploadedFile.mimetype}`.split("/")[1]
                 req.body[`image${i + 1}`] = imagePath;
                 a++;
             }
         }
 
-        console.log(req.body);
+        if (req.body['image6path']) {
+            fs.unlink(req.body[`image6path`], (err) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log(`Deleted file: ${path}`);
+                }
+            })
 
-        const destinations = req.body.destinations_covered ? req.body.destinations_covered.split(",") : package1.destinations_covered;
-        const accommodations = req.body.accommodations ? req.body.accommodations.split(",") : package1.accommodations;
-
-        const obj = {
-            name: req.body.name || package1.name,
-            images: [
-                req.body.image1 || package1.images[0],
-                req.body.image2 || package1.images[1],
-                req.body.image3 || package1.images[2],
-                req.body.image4 || package1.images[3],
-                req.body.image5 || package1.images[4],
-            ],
-            location: {
-                city: req.body.city || package1.location.city,
-                state_name: req.body.state_name || package1.location.state_name,
-            },
-            destinations_covered: destinations,
-            starting_point: req.body.starting_point || package1.starting_point,
-            ending_point: req.body.ending_point || package1.ending_point,
-            stars: req.body.stars || package1.stars,
-            accommodations: accommodations,
-            theme_id: req.body.theme_id || package1.theme_id,
+            const uploadedFile = req.files[a];
+            const uniqueFilename = uuidv4();
+            try {
+                fs.renameSync(uploadedFile.path, `uploads/package/${uniqueFilename}` + "." + `${uploadedFile.mimetype}`.split("/")[1])
+            } catch (error) {
+                console.log(error);
+            }
+            const imagePath = 'uploads/package/' + uniqueFilename + "." + `${uploadedFile.mimetype}`.split("/")[1]
+            req.body[`image6`] = imagePath;
+            a++;
         }
 
-        console.log(packageId);
-        const updatedPackage = await PackageModel.findByIdAndUpdate({ _id: packageId }, obj, { new: true });
-        console.log(updatedPackage);
-        return res.status(200).json({ msg: "Successfully updated", updatedPackage });
+        if (req.body['image7path']) {
+            fs.unlink(req.body[`image7path`], (err) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log(`Deleted file: ${path}`);
+                }
+            })
+
+            const uploadedFile = req.files[a];
+            const uniqueFilename = uuidv4();
+            try {
+                fs.renameSync(uploadedFile.path, `uploads/package/${uniqueFilename}` + "." + `${uploadedFile.mimetype}`.split("/")[1])
+            } catch (error) {
+                console.log(error);
+            }
+            const imagePath = 'uploads/package/' + uniqueFilename + "." + `${uploadedFile.mimetype}`.split("/")[1]
+            req.body[`image7`] = imagePath;
+            a++;
+        }
+
+        if (req.body['image8path']) {
+            fs.unlink(req.body[`image8path`], (err) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log(`Deleted file: ${path}`);
+                }
+            })
+
+            const uploadedFile = req.files[a];
+            const uniqueFilename = uuidv4();
+            try {
+                fs.renameSync(uploadedFile.path, `uploads/package/${uniqueFilename}` + "." + `${uploadedFile.mimetype}`.split("/")[1])
+            } catch (error) {
+                console.log(error);
+            }
+            const imagePath = 'uploads/package/' + uniqueFilename + "." + `${uploadedFile.mimetype}`.split("/")[1]
+            req.body[`image8`] = imagePath;
+            a++;
+        }
+
+        const destinations = req.body.destinations_covered.split(",");
+
+        if (!req.body.aname_1 && !req.body.aname_2) {
+            const obj = {
+                name: req.body.name,
+                images: [req.body.image1 ? req.body.image1 : package1.images[0], req.body.image2 ? req.body.image2 : package1.images[1], req.body.image3 ? req.body.image3 : package1.images[2], req.body.image4 ? req.body.image4 : package1.images[3], req.body.image5 ? req.body.image5 : package1.images[4]],
+                location: {
+                    city: req.body.city,
+                    state_name: req.body.state_name
+                },
+                destinations_covered: destinations,
+                starting_point: req.body.starting_point,
+                ending_point: req.body.ending_point,
+                stars: req.body.stars,
+                date: req.body.selectedDate,
+                details: [
+                    {
+                        price: req.body.price,
+                        duration: "2N/3D",
+                        transfer_price: req.body.transfer,
+                        accommodations: [
+                            {
+                                name: req.body.aname,
+                                nearby: req.body.nearby,
+                                images: req.body.image6 ? req.body.image6 : package1.details[0].accommodations[0].images,
+                                price: req.body.aprice,
+                                stars: req.body.aprice,
+                                acc_type: req.body.atype
+                            }
+                        ],
+                        flights: [{
+                            airport: req.body.bairport,
+                            destination_airport: req.body.dairport,
+                            flightno: req.body.fno
+                        }]
+                    }
+                ],
+                theme_id: req.body.theme_id
+            }
+            console.log(obj);
+            const saveImage = await PackageModel.updateOne({ _id: packageId }, obj)
+            console.log(saveImage);
+            return res.status(201).json({ msg: "Successfull", saveImage })
+        }
+
+        if (req.body.aname_1 && req.body.aname_2) {
+            const obj = {
+                name: req.body.name,
+                images: [req.body.image1 ? req.body.image1 : package1.images[0], req.body.image2 ? req.body.image2 : package1.images[1], req.body.image3 ? req.body.image3 : package1.images[2], req.body.image4 ? req.body.image4 : package1.images[3], req.body.image5 ? req.body.image5 : package1.images[4]],
+                location: {
+                    city: req.body.city,
+                    state_name: req.body.state_name
+                },
+                destinations_covered: destinations,
+                starting_point: req.body.starting_point,
+                ending_point: req.body.ending_point,
+                stars: req.body.stars,
+                date: req.body.selectedDate,
+                details: [
+                    {
+                        price: req.body.price,
+                        duration: "2N/3D",
+                        transfer_price: req.body.transfer,
+                        accommodations: [
+                            {
+                                name: req.body.aname,
+                                nearby: req.body.nearby,
+                                images: req.body.image6 ? req.body.image6 : package1.details[0].accommodations[0].images,
+                                price: req.body.aprice,
+                                stars: req.body.aprice,
+                                acc_type: req.body.atype
+                            }
+                        ],
+                        flights: [{
+                            airport: req.body.bairport,
+                            destination_airport: req.body.dairport,
+                            flightno: req.body.fno
+                        }]
+                    },
+                    {
+                        price: req.body.price_1,
+                        duration: "3N/4D",
+                        transfer_price: req.body.transfer_1,
+                        accommodations: [
+                            {
+                                name: req.body.aname_1,
+                                nearby: req.body.nearby_1,
+                                images: req.body.image7 ? req.body.image7 : package1.details[1].accommodations[0].images,
+                                price: req.body.aprice_1,
+                                stars: req.body.aprice_1,
+                                acc_type: req.body.atype_1
+                            }
+                        ],
+                        flights: [{
+                            airport: req.body.bairport_1,
+                            destination_airport: req.body.dairport_1,
+                            flightno: req.body.fno_1
+                        }]
+                    },
+                    {
+                        price: req.body.price_2,
+                        duration: "5N/6D",
+                        transfer_price: req.body.transfer_2,
+                        accommodations: [
+                            {
+                                name: req.body.aname_2,
+                                nearby: req.body.nearby_2,
+                                images: req.body.image8 ? req.body.image8 : package1.details[2].accommodations[0].images,
+                                price: req.body.aprice_2,
+                                stars: req.body.aprice_2,
+                                acc_type: req.body.atype_2
+                            }
+                        ],
+                        flights: [{
+                            airport: req.body.bairport_2,
+                            destination_airport: req.body.dairport_2,
+                            flightno: req.body.fno_2
+                        }]
+                    }
+                ],
+                theme_id: req.body.theme_id
+            }
+            console.log(obj);
+            const saveImage = await PackageModel.updateOne({ _id: packageId }, obj)
+            console.log(saveImage);
+            return res.status(201).json({ msg: "Successfull", saveImage })
+        }
+
+        if (!req.body.aname_1 && req.body.aname_2) {
+            const obj = {
+                name: req.body.name,
+                images: [req.body.image1 ? req.body.image1 : package1.images[0], req.body.image2 ? req.body.image2 : package1.images[1], req.body.image3 ? req.body.image3 : package1.images[2], req.body.image4 ? req.body.image4 : package1.images[3], req.body.image5 ? req.body.image5 : package1.images[4]],
+                location: {
+                    city: req.body.city,
+                    state_name: req.body.state_name
+                },
+                destinations_covered: destinations,
+                starting_point: req.body.starting_point,
+                ending_point: req.body.ending_point,
+                stars: req.body.stars,
+                date: req.body.selectedDate,
+                details: [
+                    {
+                        price: req.body.price,
+                        duration: "2N/3D",
+                        transfer_price: req.body.transfer,
+                        accommodations: [
+                            {
+                                name: req.body.aname,
+                                nearby: req.body.nearby,
+                                images: req.body.image6path ? req.body.image6 : package1.details[0].accommodations[0].images,
+                                price: req.body.aprice,
+                                stars: req.body.aprice,
+                                acc_type: req.body.atype
+                            }
+                        ],
+                        flights: [{
+                            airport: req.body.bairport,
+                            destination_airport: req.body.dairport,
+                            flightno: req.body.fno
+                        }]
+                    },
+                    {
+                        price: req.body.price_2,
+                        duration: "5N/6D",
+                        transfer_price: req.body.transfer_2,
+                        accommodations: [
+                            {
+                                name: req.body.aname_2,
+                                nearby: req.body.nearby_2,
+                                images: req.body.image8path ? req.body.image8 : package1.details[1].accommodations[0].images,
+                                price: req.body.aprice_2,
+                                stars: req.body.aprice_2,
+                                acc_type: req.body.atype_2
+                            }
+                        ],
+                        flights: [{
+                            airport: req.body.bairport_2,
+                            destination_airport: req.body.dairport_2,
+                            flightno: req.body.fno_2
+                        }]
+                    }
+                ],
+                theme_id: req.body.theme_id
+            }
+            console.log(obj);
+            const saveImage = await PackageModel.updateOne({ _id: packageId }, obj)
+            console.log(saveImage);
+            return res.status(201).json({ msg: "Successfull", saveImage })
+        }
+
+        if (req.body.aname_1 && !req.body.aname_2) {
+            const obj = {
+                name: req.body.name,
+                images: [req.body.image1 ? req.body.image1 : package1.images[0], req.body.image2 ? req.body.image2 : package1.images[1], req.body.image3 ? req.body.image3 : package1.images[2], req.body.image4 ? req.body.image4 : package1.images[3], req.body.image5 ? req.body.image5 : package1.images[4]],
+                location: {
+                    city: req.body.city,
+                    state_name: req.body.state_name
+                },
+                destinations_covered: destinations,
+                starting_point: req.body.starting_point,
+                ending_point: req.body.ending_point,
+                stars: req.body.stars,
+                date: req.body.selectedDate,
+                details: [
+                    {
+                        price: req.body.price,
+                        duration: "2N/3D",
+                        transfer_price: req.body.transfer,
+                        accommodations: [
+                            {
+                                name: req.body.aname,
+                                nearby: req.body.nearby,
+                                images: req.body.image6 ? req.body.image6 : package1.details[0].accommodations[0].images,
+                                price: req.body.aprice,
+                                stars: req.body.aprice,
+                                acc_type: req.body.atype
+                            }
+                        ],
+                        flights: [{
+                            airport: req.body.bairport,
+                            destination_airport: req.body.dairport,
+                            flightno: req.body.fno
+                        }]
+                    },
+                    {
+                        price: req.body.price_1,
+                        duration: "3N/4D",
+                        transfer_price: req.body.transfer_1,
+                        accommodations: [
+                            {
+                                name: req.body.aname_1,
+                                nearby: req.body.nearby_1,
+                                images: req.body.image7 ? req.body.image7 : package1.details[1].accommodations[0].images,
+                                price: req.body.aprice_1,
+                                stars: req.body.aprice_1,
+                                acc_type: req.body.atype_1
+                            }
+                        ],
+                        flights: [{
+                            airport: req.body.bairport_1,
+                            destination_airport: req.body.dairport_1,
+                            flightno: req.body.fno_1
+                        }]
+                    }
+                ],
+                theme_id: req.body.theme_id
+            }
+            console.log(obj);
+            const saveImage = await PackageModel.updateOne({ _id: packageId }, obj)
+            console.log(saveImage);
+            return res.status(201).json({ msg: "Successfull", saveImage })
+        }
+
+        return res.status(200).json({ msg: "Successfully updated" });
     } catch (error) {
         console.log(error);
     }
