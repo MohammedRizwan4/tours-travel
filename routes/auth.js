@@ -80,7 +80,9 @@ router.delete("/delete-user", async (req, res) => {
 router.get("/fetch-one-user/:id", async (req, res) => {
     try {
         const id = req.params.id;
+        console.log(id);
         const user = await User.find({ _id: id })
+        console.log(user);
         return res.status(200).json({ user })
     } catch (error) {
         console.log(error);
@@ -98,5 +100,52 @@ router.get("/get-all-users", async (req, res) => {
     }
 })
 
-export default router;
+router.post("/like/package", async (req, res) => {
+    try {
+        const id = req.body.id;
+        const packageId = req.body.packId;
+        console.log(packageId);
+        const first = await User.find({ _id: id });
+        console.log(first);
+        if(!first[0].likes.includes(packageId)) {
+            const user = await User.findOneAndUpdate({ _id: id }, { $push: { likes: packageId } }, { new: true });
+            console.log(user);
+            const userFind = await User.find({ _id: id });
+            console.log(userFind);
+            return res.status(200).json({ msg: "Package liked" })
+        }
+        else{
+            return res.status(200).json({ msg: "Package already been liked" })
+        }
+        console.log(id);
+    } catch (error) {
+        return res.status(500).json({ msg: "Internal Server Error" })
+    }
+})
 
+router.post("/dislike/package", async (req, res) => {
+    try {
+        const id = req.body.id;
+        const packageId = req.body.packId;
+        console.log(packageId);
+        console.log(id);
+        const user = await User.findOneAndUpdate(
+            { _id: id },
+            { $pull: { likes: packageId } },
+            { new: true }
+        );
+
+        if (user.likes.includes(packageId)) {
+            return res.status(200).json({ msg: "Package unliked" });
+        } else {
+            return res.status(200).json({ msg: "Package was not liked before" });
+        }
+
+        console.log(user);
+
+    } catch (error) {
+        return res.status(500).json({ msg: "Internal Server Error" })
+    }
+})
+
+export default router;
