@@ -5,6 +5,7 @@ import fs from 'fs'
 import path from 'path';
 import PackageModel from '../models/Package.js';
 import ThemeModel from '../models/Theme.js';
+import User from '../models/User.js';
 
 const router = express.Router();
 const storage = multer.diskStorage({
@@ -736,4 +737,24 @@ router.get("/fetch-cities", async (req, res) => {
 
 export default router;
 
+
+router.get("/liked-packages/:id", async (req,res) => {
+    try {
+        const userId = req.params.id;
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(400).json({ msg: "User not found" })
+        }
+
+        const userLikes = user.likes;
+        const packages = await PackageModel.find({
+            _id: { $in: userLikes }
+        });
+        console.log(packages);
+        return res.status(200).json({packages})
+    } catch (error) {
+        console.log(error);
+    }
+})
 
