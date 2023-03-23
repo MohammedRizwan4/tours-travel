@@ -237,4 +237,13 @@ PackageModel.insertMany([
 ])
 
 
+// .env instructions 
+// first create this file then run otherwise it will give console.error
 
+// MONGO_URI='mongodb-url'
+// PORT=7800
+// STRIPE_SECRET_KEY='api-secret-key'
+// ENDPOINT_SECRET='endpoint-key'
+// JWT_SECRET='jwt-token'
+// SUCCESS_URI=http://127.0.0.1:5173/mybookings?session_id={CHECKOUT_SESSION_ID}
+// ERROR_URI=http://127.0.0.1:5173/mybookings
