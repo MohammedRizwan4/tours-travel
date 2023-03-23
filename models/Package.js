@@ -113,6 +113,8 @@ const packageSchema = new mongoose.Schema({
     theme_id: {
         type: String,
     }
+},{
+    timestamps: true
 })
 
 const PackageModel = mongoose.model('package', packageSchema)

@@ -544,7 +544,7 @@ router.put("/update-package", upload.array('images'), async (req, res) => {
                             {
                                 name: req.body.aname_2,
                                 nearby: req.body.nearby_2,
-                                images: req.body.image8 ? req.body.image8 : package1.details[2].accommodations[0].images,
+                                images: req.body.image8 ? req.body.image8 : package1.details[0].accommodations[0].images,
                                 price: req.body.aprice_2,
                                 stars: req.body.aprice_2,
                                 acc_type: req.body.atype_2
@@ -670,7 +670,7 @@ router.put("/update-package", upload.array('images'), async (req, res) => {
                             {
                                 name: req.body.aname_1,
                                 nearby: req.body.nearby_1,
-                                images: req.body.image7 ? req.body.image7 : package1.details[1].accommodations[0].images,
+                                images: req.body.image7 ? req.body.image7 : package1.details[0].accommodations[0].images,
                                 price: req.body.aprice_1,
                                 stars: req.body.aprice_1,
                                 acc_type: req.body.atype_1

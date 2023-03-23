@@ -35,8 +35,6 @@ PackageModel.insertMany([
 ])
 
 
-
-
 PackageModel.insertMany([
     {
         name: 'Sands & Serenity',

@@ -2,9 +2,12 @@ import express from "express";
 import Auth from '../controllers/auth.js'
 import User from "../models/User.js";
 import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+
+dotenv.config();
 // import { verifyUser } from "../services/validate.js";
 const router = express.Router();
-const JWT_SECRET = "MohammedRizwanMohammedRizwanMohammedRizwan";
+const JWT_SECRET = process.env.JWT_SECRET
 
 router.post("/register", Auth.register)
 router.post("/login", Auth.login)

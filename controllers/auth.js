@@ -2,8 +2,6 @@ import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = "MohammedRizwanMohammedRizwanMohammedRizwan";
-
 class Auth {
     async register(req, res, next) {
         try {
@@ -34,7 +32,7 @@ class Auth {
                 id: newUser._id,
                 name: newUser.firstName,
             };
-            const token = jwt.sign(tokenData, JWT_SECRET, {
+            const token = jwt.sign(tokenData, process.env.JWT_SECRET, {
                 expiresIn: "3d",
             });
 
@@ -60,7 +58,7 @@ class Auth {
                         id: isUser._id,
                         timestamp
                     };
-                    const token = jwt.sign(tokenData, JWT_SECRET, {
+                    const token = jwt.sign(tokenData, process.env.JWT_SECRET, {
                         expiresIn: "3d",
                     });
                     User.findOneAndUpdate({ _id: isUser._id, }, { $push: { tokens: token } }, (err, user) => {
@@ -106,7 +104,7 @@ class Auth {
                         id: isAdmin._id,
                         timestamp
                     };
-                    const token = jwt.sign(tokenData, JWT_SECRET, {
+                    const token = jwt.sign(tokenData, process.env.JWT_SECRET, {
                         expiresIn: "3d",
                     });
                     console.log(email, password);
@@ -149,7 +147,7 @@ class Auth {
         //                     id: isUser._id,
         //                     timestamp
         //                 };
-        //                 const token = jwt.sign(tokenData, JWT_SECRET, {
+        //                 const token = jwt.sign(tokenData, process.env.JWT_SECRET, {
         //                     expiresIn: "3d",
         //                 });
         //                 User.findOneAndUpdate({ _id: isUser._id, }, { $push: { tokens: token } }, (err, user) => {
