@@ -7,6 +7,7 @@ import path from 'path'
 import { v4 as uuidv4 } from 'uuid';
 import ThemeModel from '../models/Theme.js';
 import { verifyUser } from '../services/validate.js';
+import PackageModel from '../models/Package.js';
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -88,6 +89,8 @@ router.delete("/delete-theme", async (req, res) => {
         )
         console.log(id);
         await ThemeModel.findByIdAndDelete(id);
+
+        await PackageModel.deleteMany({ theme_id: id })
         return res.status(200).json({ msg: "Theme Deleted Successfully" })
     } catch (error) {
         console.log(error);

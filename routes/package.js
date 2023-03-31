@@ -6,6 +6,8 @@ import path from 'path';
 import PackageModel from '../models/Package.js';
 import ThemeModel from '../models/Theme.js';
 import User from '../models/User.js';
+import Booking from '../models/Booking.js';
+import Payment from '../models/Payment.js';
 
 const router = express.Router();
 const storage = multer.diskStorage({
@@ -325,6 +327,15 @@ router.delete("/delete-package", async (req, res) => {
         }
 
         await PackageModel.findByIdAndDelete(id);
+        await Booking.deleteMany({ packageId: id })
+
+        await User.updateMany(
+            { likes: id },
+            { $pull: { likes: id } }
+        );
+
+        await Payment.deleteMany({ packId: id })
+
         return res.status(200).json({ msg: "Package Deleted Successfully" })
     } catch (error) {
         console.log(error);
@@ -417,6 +428,7 @@ router.put("/update-package", upload.array('images'), async (req, res) => {
         }
 
         if (req.body['image8path']) {
+            console.log(req.body.image8path);
             fs.unlink(req.body[`image8path`], (err) => {
                 if (err) {
                     console.error(err);
@@ -482,6 +494,8 @@ router.put("/update-package", upload.array('images'), async (req, res) => {
             return res.status(201).json({ msg: "Successfull", saveImage })
         }
 
+        console.log(req.body.image8);
+
         if (req.body.aname_1 && req.body.aname_2) {
             const obj = {
                 name: req.body.name,
@@ -544,7 +558,7 @@ router.put("/update-package", upload.array('images'), async (req, res) => {
                             {
                                 name: req.body.aname_2,
                                 nearby: req.body.nearby_2,
-                                images: req.body.image8 ? req.body.image8 : package1.details[0].accommodations[0].images,
+                                images: req.body.image8 ? req.body.image8 : package1.details.length > 2 ? package1.details[2].accommodations[0].images : package1.details[1].accommodations[0].images,
                                 price: req.body.aprice_2,
                                 stars: req.body.aprice_2,
                                 acc_type: req.body.atype_2
@@ -566,6 +580,7 @@ router.put("/update-package", upload.array('images'), async (req, res) => {
         }
 
         if (!req.body.aname_1 && req.body.aname_2) {
+            console.log(req.body.image8);
             const obj = {
                 name: req.body.name,
                 images: [req.body.image1 ? req.body.image1 : package1.images[0], req.body.image2 ? req.body.image2 : package1.images[1], req.body.image3 ? req.body.image3 : package1.images[2], req.body.image4 ? req.body.image4 : package1.images[3], req.body.image5 ? req.body.image5 : package1.images[4]],
@@ -587,7 +602,7 @@ router.put("/update-package", upload.array('images'), async (req, res) => {
                             {
                                 name: req.body.aname,
                                 nearby: req.body.nearby,
-                                images: req.body.image6path ? req.body.image6 : package1.details[0].accommodations[0].images,
+                                images: req.body.image6 ? req.body.image6 : package1.details[0].accommodations[0].images,
                                 price: req.body.aprice,
                                 stars: req.body.aprice,
                                 acc_type: req.body.atype
@@ -607,7 +622,7 @@ router.put("/update-package", upload.array('images'), async (req, res) => {
                             {
                                 name: req.body.aname_2,
                                 nearby: req.body.nearby_2,
-                                images: req.body.image8path ? req.body.image8 : package1.details[1].accommodations[0].images,
+                                images: req.body.image8 ? req.body.image8 : package1.details[1].accommodations[0].images,
                                 price: req.body.aprice_2,
                                 stars: req.body.aprice_2,
                                 acc_type: req.body.atype_2
@@ -670,7 +685,7 @@ router.put("/update-package", upload.array('images'), async (req, res) => {
                             {
                                 name: req.body.aname_1,
                                 nearby: req.body.nearby_1,
-                                images: req.body.image7 ? req.body.image7 : package1.details[0].accommodations[0].images,
+                                images: req.body.image7 ? req.body.image7 : package1.details[1].accommodations[0].images,
                                 price: req.body.aprice_1,
                                 stars: req.body.aprice_1,
                                 acc_type: req.body.atype_1
@@ -738,7 +753,7 @@ router.get("/fetch-cities", async (req, res) => {
 export default router;
 
 
-router.get("/liked-packages/:id", async (req,res) => {
+router.get("/liked-packages/:id", async (req, res) => {
     try {
         const userId = req.params.id;
         const user = await User.findById(userId);
@@ -752,7 +767,7 @@ router.get("/liked-packages/:id", async (req,res) => {
             _id: { $in: userLikes }
         });
         console.log(packages);
-        return res.status(200).json({packages})
+        return res.status(200).json({ packages })
     } catch (error) {
         console.log(error);
     }

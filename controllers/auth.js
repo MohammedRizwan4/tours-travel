@@ -1,7 +1,9 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from 'dotenv';
 
+dotenv.config();
 class Auth {
     async register(req, res, next) {
         try {
@@ -45,13 +47,15 @@ class Auth {
     }
 
     async login(req, res, next) {
-        // console.log(req.body);
+        console.log(req.body);
 
         try {
             const { email, password } = req.body;
             const isUser = await User.findOne({ email });
+            console.log({ isUser });
             if (isUser) {
                 const user = bcrypt.compareSync(password, isUser.password);
+                console.log({ user });
                 if (user) {
                     const timestamp = new Date().getTime();
                     const tokenData = {
@@ -61,6 +65,7 @@ class Auth {
                     const token = jwt.sign(tokenData, process.env.JWT_SECRET, {
                         expiresIn: "3d",
                     });
+                    console.log(token);
                     User.findOneAndUpdate({ _id: isUser._id, }, { $push: { tokens: token } }, (err, user) => {
                         if (err) {
                             return res.status(500).json({ errors: [{ msg: "Error at updating token" }] })
@@ -68,7 +73,8 @@ class Auth {
                             if (user.admin) {
                                 return res.status(201).json({ token, admin: true });
                             } else {
-                                return res.status(400).json({ msg: "You are not admin" });
+                                console.log("object");
+                                return res.status(200).json({ token, admin: false });
                             }
                         }
                     })

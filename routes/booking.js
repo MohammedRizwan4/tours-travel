@@ -75,5 +75,19 @@ router.get("/fetch-user-booking/:id", async (req, res) => {
     }
 })
 
+router.get("/fetch-all-bookings", async (req, res) => {
+    try {
+
+        const bookings = await Booking.find().sort({ createdAt: -1 });
+
+        console.log(bookings);
+        return res
+            .status(200)
+            .json({ msg: "Booking done Successfully ", bookings });
+    } catch (error) {
+        console.log(error);
+    }
+})
+
 
 export default router;

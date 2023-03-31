@@ -3,6 +3,8 @@ import Auth from '../controllers/auth.js'
 import User from "../models/User.js";
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
+import Booking from "../models/Booking.js";
+import Payment from "../models/Payment.js";
 
 dotenv.config();
 // import { verifyUser } from "../services/validate.js";
@@ -73,7 +75,13 @@ router.delete("/delete-user", async (req, res) => {
     try {
         const id = req.body.id
         await User.findByIdAndDelete(id);
+
+        await Booking.deleteMany({ userId: id })
+
+        await Payment.deleteMany({ userId: id })
+
         return res.status(200).json({ msg: "User Deleted Successfully" })
+
     } catch (error) {
         console.log(error);
         return res.status(500).json({ msg: "Internal Server Error" })
