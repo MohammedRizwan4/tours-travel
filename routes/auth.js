@@ -116,6 +116,7 @@ router.post("/like/package", async (req, res) => {
         const id = req.body.id;
         const packageId = req.body.packId;
         console.log(packageId);
+        console.log(id);
         const first = await User.find({ _id: id });
         console.log(first);
         if(!first[0].likes.includes(packageId)) {

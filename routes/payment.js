@@ -25,7 +25,6 @@ router.post("/create-checkout-session", async (req, res) => {
         }
     })
 
-    console.log("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj", customer);
     const session = await stripeInstance.checkout.sessions.create({
         billing_address_collection: "required",
         payment_method_types: ['card'],
@@ -37,10 +36,10 @@ router.post("/create-checkout-session", async (req, res) => {
                         name: traveller.name,
                         description: traveller.type === "adult" ? "An Adult travller" : "An children traveller",
                         images: [
-                            "https://cdn.pixabay.com/photo/2015/03/10/17/23/youtube-667451_960_720.png",
+                            traveller.type === "adult" ? "https://media.istockphoto.com/id/178600303/photo/flamy-symbol.jpg?s=612x612&w=0&k=20&c=vg7tu6EMWcubtJ6BxeR8xsAqNzk60spxF1owdho2bqg=" : "https://media.istockphoto.com/id/1277498940/vector/maze-c-letter-logo-made-of-three-parallel-lines.jpg?s=612x612&w=0&k=20&c=Tel_WwdTwWw_4s578iYZ2iFjt-hpyiBj-vbzGfVjj_M="
                         ]
                     },
-                    unit_amount_decimal: traveller.price * 100
+                    unit_amount_decimal: Math.floor(traveller.price * 100)
                 },
                 quantity: 1,
             }
@@ -70,16 +69,12 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (reques
     switch (event.type) {
         case 'payment_intent.succeeded':
             const paymentIntentSucceeded = event.data.object;
-            // Then define and call a function to handle the event payment_intent.succeeded
             break;
         case 'checkout.session.completed':
             const data = event.data.object;
             let customer = await stripeInstance.customers.retrieve(data.customer);
             const customer1 = await stripeInstance.customers.retrieve(customer.id);
-            console.log(customer1);
-            console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", customer.metadata.travellers);
             customer = JSON.parse(customer?.metadata?.travellers);
-            console.log(customer);
 
             const payment = await Payment({
                 packId: customer.packageId,
