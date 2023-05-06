@@ -28,6 +28,7 @@ app.post(
     })
 );
 
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use(bodyParser.json({ limit: '50mb' }));
