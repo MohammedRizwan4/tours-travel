@@ -37,7 +37,7 @@ router.post("/create-theme", upload.single('image'), async (req, res) => {
         const saved = await saveImage.save();
         return res.status(201).json({ msg: "Theme Added Successfully ", saved })
     } catch (error) {
-        console.log(error);
+        return res.status(400).json({ msg: error })
     }
 })
 
