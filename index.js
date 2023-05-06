@@ -41,6 +41,11 @@ app.use('/api', packageRoutes)
 app.use('/api', bookingRoutes)
 app.use('/api', paymentRoutes)
 
+app.get('/', (req, res) => {
+    res.json({ msg: "Hello from server" });
+})
+
+
 app.listen(process.env.PORT, () => {
     console.log(`Server is started at ${process.env.PORT}`);
 })
