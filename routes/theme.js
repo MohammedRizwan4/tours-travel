@@ -8,42 +8,82 @@ import { v4 as uuidv4 } from 'uuid';
 import ThemeModel from '../models/Theme.js';
 import { verifyUser } from '../services/validate.js';
 import PackageModel from '../models/Package.js';
+
 const router = express.Router();
 
+// configure multer to store uploaded files in a specific folder
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        const uploadDir = 'uploads/theme';
-        if (!fs.existsSync(uploadDir)){
-            fs.mkdirSync(uploadDir);
-        }
-        cb(null, uploadDir)
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/theme')
     },
-    filename: (req, file, cb) => {
-        console.log(file.originalname)
-        cb(null, file.originalname)
-    }
-})
-
-const upload = multer({ storage: storage })
-
-router.post("/create-theme", upload.single('image'), async (req, res) => {
-    try {
-        const file = req.file.filename;
+    filename: function (req, file, cb) {
         const uniqueFilename = uuidv4();
-        const uploadedFile = req.file;
-        uploadedFile.filename = uniqueFilename;
-        fs.renameSync(uploadedFile.path, `uploads/theme/${uploadedFile.filename}` + "." + `${uploadedFile.mimetype}`.split("/")[1]);
-        const imagePath = file ? 'uploads/theme/' + uploadedFile.filename + "." + `${uploadedFile.mimetype}`.split("/")[1] : null;
-        req.body.image = imagePath
-        console.log(req.body)
-
-        const saveImage = await ThemeModel(req.body)
-        const saved = await saveImage.save();
-        return res.status(201).json({ msg: "Theme Added Successfully ", saved })
-    } catch (error) {
-        return res.status(400).json({ msg: error })
+        const fileExtension = file.originalname.split('.').pop();
+        const newFilename = `${uniqueFilename}.${fileExtension}`;
+        cb(null, newFilename);
     }
 })
+
+const upload = multer({ storage: storage });
+
+// create a new theme
+router.post('/create-theme', upload.single('image'), async (req, res) => {
+    try {
+        // extract the data from the request body and file uploaded by Multer
+        const { name, description } = req.body;
+        const image = req.file.filename;
+
+        // create a new theme object and save it to the database
+        const theme = new ThemeModel({
+            name,
+            description,
+            image,
+        });
+        const savedTheme = await theme.save();
+
+        res.status(201).json({ message: 'Theme created successfully', theme: savedTheme });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+// const router = express.Router();
+
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         const uploadDir = 'uploads/theme';
+//         if (!fs.existsSync(uploadDir)){
+//             fs.mkdirSync(uploadDir);
+//         }
+//         cb(null, uploadDir)
+//     },
+//     filename: (req, file, cb) => {
+//         console.log(file.originalname)
+//         cb(null, file.originalname)
+//     }
+// })
+
+// const upload = multer({ storage: storage })
+
+// router.post("/create-theme", upload.single('image'), async (req, res) => {
+//     try {
+//         const file = req.file.filename;
+//         const uniqueFilename = uuidv4();
+//         const uploadedFile = req.file;
+//         uploadedFile.filename = uniqueFilename;
+//         fs.renameSync(uploadedFile.path, `uploads/theme/${uploadedFile.filename}` + "." + `${uploadedFile.mimetype}`.split("/")[1]);
+//         const imagePath = file ? 'uploads/theme/' + uploadedFile.filename + "." + `${uploadedFile.mimetype}`.split("/")[1] : null;
+//         req.body.image = imagePath
+//         console.log(req.body)
+
+//         const saveImage = await ThemeModel(req.body)
+//         const saved = await saveImage.save();
+//         return res.status(201).json({ msg: "Theme Added Successfully ", saved })
+//     } catch (error) {
+//         return res.status(400).json(error.message)
+//     }
+// })
 
 router.put("/update-theme", upload.single('image'), async (req, res) => {
     try {
