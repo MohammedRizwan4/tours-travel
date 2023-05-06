@@ -1,7 +1,5 @@
 import express from 'express'
 import theme from '../controllers/theme.js';
-import multer from 'multer';
-import formidable from 'formidable';
 import fs from 'fs';
 import path from 'path'
 import { v4 as uuidv4 } from 'uuid';
@@ -11,35 +9,23 @@ import PackageModel from '../models/Package.js';
 
 const router = express.Router();
 
-// configure multer to store uploaded files in a specific folder
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/theme')
-    },
-    filename: function (req, file, cb) {
-        const uniqueFilename = uuidv4();
-        const fileExtension = file.originalname.split('.').pop();
-        const newFilename = `${uniqueFilename}.${fileExtension}`;
-        cb(null, newFilename);
-    }
-})
-
-const upload = multer({ storage: storage });
-
-// create a new theme
-router.post('/create-theme', upload.single('image'), async (req, res) => {
+router.post('/create-theme', async (req, res) => {
     try {
-        // extract the data from the request body and file uploaded by Multer
         const { name, description } = req.body;
-        const image = req.file.filename;
+        const image = req.files.image;
+        const fileName = uuidv4() + path.extname(image.name);
+        const filePath = path.join(__dirname, '..', 'uploads', fileName);
 
-        // create a new theme object and save it to the database
-        const theme = new ThemeModel({
+        const newTheme = new ThemeModel({
             name,
-            description,
-            image,
+            image: {
+                data: filePath,
+                contentType: image.mimetype
+            },
+            description
         });
-        const savedTheme = await theme.save();
+
+        const savedTheme = await newTheme.save();
 
         res.status(201).json({ message: 'Theme created successfully', theme: savedTheme });
     } catch (error) {
@@ -47,6 +33,43 @@ router.post('/create-theme', upload.single('image'), async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+// // configure multer to store uploaded files in a specific folder
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, 'uploads/theme')
+//     },
+//     filename: function (req, file, cb) {
+//         const uniqueFilename = uuidv4();
+//         const fileExtension = file.originalname.split('.').pop();
+//         const newFilename = `${uniqueFilename}.${fileExtension}`;
+//         cb(null, newFilename);
+//     }
+// })
+
+// const upload = multer({ storage: storage });
+
+// // create a new theme
+// router.post('/create-theme', upload.single('image'), async (req, res) => {
+//     try {
+//         // extract the data from the request body and file uploaded by Multer
+//         const { name, description } = req.body;
+//         const image = req.file.filename;
+
+//         // create a new theme object and save it to the database
+//         const theme = new ThemeModel({
+//             name,
+//             description,
+//             image,
+//         });
+//         const savedTheme = await theme.save();
+
+//         res.status(201).json({ message: 'Theme created successfully', theme: savedTheme });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+// });
 
 // const router = express.Router();
 
