@@ -34,7 +34,16 @@ app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json());
-app.use(cors());
+
+const corsOptions = {
+    origin: 'http://127.0.0.1:5173/', // Allow only this origin
+    methods: 'GET,PUT,POST,DELETE', // Allow only these methods
+    optionsSuccessStatus: 204, // Set the status code for successful OPTIONS requests
+    credentials: true // Allow cookies and authentication headers
+  }
+  
+  app.use(cors(corsOptions));
+  
 app.use('/api', authRoutes)
 app.use('/api', themeRoutes)
 app.use('/api', packageRoutes)
