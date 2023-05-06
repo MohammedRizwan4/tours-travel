@@ -36,10 +36,9 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json());
 
 const corsOptions = {
-    origin: 'http://127.0.0.1:5173/', // Allow only this origin
-    methods: 'GET,PUT,POST,DELETE', // Allow only these methods
-    optionsSuccessStatus: 204, // Set the status code for successful OPTIONS requests
-    credentials: true // Allow cookies and authentication headers
+    origin: 'http://127.0.0.1:5173/',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
 }
 
 app.use(cors(corsOptions));
