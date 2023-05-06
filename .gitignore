@@ -1,6 +1,5 @@
 node_modules
 env
-.env
-server/uploads/package
-server/uploads/theme
+uploads/package
+uploads/theme
 uploads
