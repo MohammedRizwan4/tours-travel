@@ -28,7 +28,7 @@ router.post('/create-theme', async (req, res) => {
         res.status(201).json({ message: 'Theme created successfully',savedTheme });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ error });
     }
 });
 
