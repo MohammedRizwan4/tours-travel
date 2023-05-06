@@ -236,6 +236,7 @@ PackageModel.insertMany([
     },
 ])
 
+// "start": "concurrently \" nodemon server \" \" npm run dev --prefix ../pack \"",
 
 // .env instructions 
 // first create this file then run otherwise it will give console.error
