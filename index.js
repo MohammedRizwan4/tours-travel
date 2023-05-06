@@ -40,10 +40,10 @@ const corsOptions = {
     methods: 'GET,PUT,POST,DELETE', // Allow only these methods
     optionsSuccessStatus: 204, // Set the status code for successful OPTIONS requests
     credentials: true // Allow cookies and authentication headers
-  }
-  
-  app.use(cors(corsOptions));
-  
+}
+
+app.use(cors(corsOptions));
+
 app.use('/api', authRoutes)
 app.use('/api', themeRoutes)
 app.use('/api', packageRoutes)

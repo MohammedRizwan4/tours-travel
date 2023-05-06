@@ -25,7 +25,7 @@ router.post('/create-theme', async (req, res) => {
 
         const savedTheme = await newTheme.save();
         res.setHeader('Access-Control-Allow-Origin', '*'); // add this line to allow CORS
-        res.status(201).json({ message: 'Theme created successfully', theme: savedTheme });
+        res.status(201).json({ message: 'Theme created successfully',savedTheme });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
@@ -106,80 +106,80 @@ router.post('/create-theme', async (req, res) => {
 //     }
 // })
 
-router.put("/update-theme", upload.single('image'), async (req, res) => {
-    try {
-        const id = req.body.id;
-        console.log(id);
-        const file = req.file.filename;
-        const uniqueFilename = uuidv4();
-        const uploadedFile = req.file;
-        uploadedFile.filename = uniqueFilename;
-        fs.renameSync(uploadedFile.path, `uploads/theme/${uploadedFile.filename}` + "." + `${uploadedFile.mimetype}`.split("/")[1]);
-        const imagePath = file ? 'uploads/theme/' + uploadedFile.filename + "." + `${uploadedFile.mimetype}`.split("/")[1] : null;
-        req.body.image = imagePath
-        console.log(req.body)
-        const fileName = req.body.deleteFilePath;
-        fs.unlink(fileName, (err) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
-        }
-        )
+// router.put("/update-theme", upload.single('image'), async (req, res) => {
+//     try {
+//         const id = req.body.id;
+//         console.log(id);
+//         const file = req.file.filename;
+//         const uniqueFilename = uuidv4();
+//         const uploadedFile = req.file;
+//         uploadedFile.filename = uniqueFilename;
+//         fs.renameSync(uploadedFile.path, `uploads/theme/${uploadedFile.filename}` + "." + `${uploadedFile.mimetype}`.split("/")[1]);
+//         const imagePath = file ? 'uploads/theme/' + uploadedFile.filename + "." + `${uploadedFile.mimetype}`.split("/")[1] : null;
+//         req.body.image = imagePath
+//         console.log(req.body)
+//         const fileName = req.body.deleteFilePath;
+//         fs.unlink(fileName, (err) => {
+//             if (err) {
+//                 console.error(err);
+//                 return;
+//             }
+//         }
+//         )
 
-        const filter = { _id: id };
-        const update = {
-            $set: {
-                image: req.body.image,
-                description: req.body.description
-            }
-        }
-        const saveImage = await ThemeModel.updateOne(filter, update)
-        return res.status(201).json({ msg: "Theme Added Successfully ", saveImage })
-    } catch (error) {
-        console.log(error);
-    }
-})
+//         const filter = { _id: id };
+//         const update = {
+//             $set: {
+//                 image: req.body.image,
+//                 description: req.body.description
+//             }
+//         }
+//         const saveImage = await ThemeModel.updateOne(filter, update)
+//         return res.status(201).json({ msg: "Theme Added Successfully ", saveImage })
+//     } catch (error) {
+//         console.log(error);
+//     }
+// })
 
-router.delete("/delete-theme", async (req, res) => {
-    try {
-        const id = req.body.id;
-        const fileName = req.body.deleteFilePath;
-        fs.unlink(fileName, (err) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
-        }
-        )
-        console.log(id);
-        await ThemeModel.findByIdAndDelete(id);
+// router.delete("/delete-theme", async (req, res) => {
+//     try {
+//         const id = req.body.id;
+//         const fileName = req.body.deleteFilePath;
+//         fs.unlink(fileName, (err) => {
+//             if (err) {
+//                 console.error(err);
+//                 return;
+//             }
+//         }
+//         )
+//         console.log(id);
+//         await ThemeModel.findByIdAndDelete(id);
 
-        await PackageModel.deleteMany({ theme_id: id })
-        return res.status(200).json({ msg: "Theme Deleted Successfully" })
-    } catch (error) {
-        console.log(error);
-    }
-})
+//         await PackageModel.deleteMany({ theme_id: id })
+//         return res.status(200).json({ msg: "Theme Deleted Successfully" })
+//     } catch (error) {
+//         console.log(error);
+//     }
+// })
 
-router.put("/update-theme-name", async (req, res) => {
-    try {
-        console.log(req.body);
-        const id = req.body.id;
-        const filter = { _id: id };
-        const update = {
-            $set: {
-                name: req.body.name,
-                description: req.body.description
-            }
-        }
-        const saveImage = await ThemeModel.updateOne(filter, update)
-        console.log(saveImage);
-        return res.status(201).json({ msg: "Theme Added Successfully ", saveImage })
-    } catch (error) {
-        console.log(error);
-    }
-})
+// router.put("/update-theme-name", async (req, res) => {
+//     try {
+//         console.log(req.body);
+//         const id = req.body.id;
+//         const filter = { _id: id };
+//         const update = {
+//             $set: {
+//                 name: req.body.name,
+//                 description: req.body.description
+//             }
+//         }
+//         const saveImage = await ThemeModel.updateOne(filter, update)
+//         console.log(saveImage);
+//         return res.status(201).json({ msg: "Theme Added Successfully ", saveImage })
+//     } catch (error) {
+//         console.log(error);
+//     }
+// })
 
 router.get("/allthemes", async (req, res) => {
     try {
