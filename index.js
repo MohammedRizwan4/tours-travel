@@ -38,8 +38,8 @@ app.use(express.json());
 const corsOptions = {
     origin: 'https://packandgo-new.vercel.app',
     methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type'],
-}
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
 
 app.use(cors(corsOptions));
 
