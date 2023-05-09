@@ -12,20 +12,18 @@ const router = express.Router();
 router.post('/create-theme', async (req, res) => {
     try {
         const { name, description } = req.body;
-        const image1 = req.files.image;
-
         const newTheme = new ThemeModel({
             name,
             image: {
-                data: image1,
-                contentType: image1.mimetype
+                data: req.files.image.data,
+                contentType: req.files.image.contentType
             },
             description
         });
 
         const savedTheme = await newTheme.save();
         res.setHeader('Access-Control-Allow-Origin', '*'); // add this line to allow CORS
-        res.status(201).json({ message: 'Theme created successfully',savedTheme });
+        res.status(201).json({ message: 'Theme created successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error });
