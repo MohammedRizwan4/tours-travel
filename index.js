@@ -36,7 +36,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json());
 
 const corsOptions = {
-    origin: 'http://127.0.0.1:5173/',
+    origin: 'https://packandgo-new.vercel.app',
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
 }
